@@ -1,0 +1,9 @@
+schema: https://api.graph.cool/simple/v1/swapi
+overwrite: true
+generates:
+  ./src/graphql/fragmentTypes.ts:
+    plugins:
+      - fragment-matcher
+    config:
+      apolloClientVersion: 2
+      module: es2015
