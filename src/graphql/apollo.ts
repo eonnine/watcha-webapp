@@ -26,28 +26,28 @@ const httpLink = createHttpLink({
  *  apollo-link-ws: https://www.apollographql.com/docs/link/links/ws/
  *  Subscriptions: https://www.apollographql.com/docs/react/data/subscriptions/
  */
-const wsLink = new WebSocketLink({
-  uri: `ws://${GRAPHQL_ENDPOINT}`,
-  options: {
-    reconnect: true,
-    connectionParams: {
-      authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
-  },
-  }
-})
+// const wsLink = new WebSocketLink({
+//   //uri: `ws://${GRAPHQL_ENDPOINT}`,
+//   options: {
+//     reconnect: true,
+//     connectionParams: {
+//       authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
+//     },
+//   }
+// })
 
 /**
  * @ref
  *  Composing Links: https://www.apollographql.com/docs/link/composition/#directional-composition
  */
-const link = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query)
-    return (definition.kind === 'OperationDefinition' && definition.operation === 'subscription')
-  },
-  wsLink,
-  httpLink,
-)
+// const link = split(
+//   ({ query }) => {
+//     const definition = getMainDefinition(query)
+//     return (definition.kind === 'OperationDefinition' && definition.operation === 'subscription')
+//   },
+//   wsLink,
+//   httpLink,
+// )
 
 /**
  * @ref
@@ -133,10 +133,11 @@ const cache = new InMemoryCache({
  *  ApolloClient: https://www.apollographql.com/docs/react/api/apollo-client/
  */
 export const apolloClient = new ApolloClient({
+  ssrMode: false,
   /**
    * 에러 링크는 http 혹은 
    */
-  link: from([errorLink, retryLink, authLink, link]),
+  link: from([errorLink, retryLink, authLink, httpLink]),
   cache,
   // 개발일때만 true
   connectToDevTools: true,
