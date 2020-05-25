@@ -1,0 +1,40 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "allowJs": true,
+    "checkJs": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "module": "esnext",
+    "jsx": "react",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": true,
+    "pretty": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "baseUrl": "src",
+    "charset": "utf8",
+    "locale": "ko"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "/node_modules",
+    "/**/*.spec.*",
+    "/**/*.test.*"
+  ]
+}
