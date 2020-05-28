@@ -7,21 +7,27 @@ podTemplate(label: label, containers: [
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
+    echo "first@@@@@@@@@@@@@@"
     node(label) {
         def dockerhubUrl = 'jeg910716/watcha-webapp-test'
         def credentialId = 'dockerhub'
+        echo "second@@@@@@@@@@@@@@"
 
         stage('Clone repository') {
+            echo "third@@@@@@@@@@@@@@"
             checkout scm
+            echo "third@@@@@@@@@@@@@@end"
         }
         stage('Create Docker images') {
             container('docker') {
+                echo "fourth@@@@@@@@@@@@@@"
                 withCredentials('https://registry.hub.docker.com', "$credentialId") {
                 sh """
                     docker build -t $dockerhubUrl:dev ./
                     docker push -t $dockerhubUrl:dev
                     """
                 }
+                echo "fourth@@@@@@@@@@@@@@end"
             }
         }
         stage('Run kubectl') {
