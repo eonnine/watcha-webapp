@@ -6,7 +6,7 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     node {
-        def dockerhubUrl = "jeg910716/watcha-webapp-test"
+        def dockerhubUrl = 'jeg910716/watcha-webapp-test'
         def credentialId = 'dockerhub'
 
         stage('Clone repository') {
