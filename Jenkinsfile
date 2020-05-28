@@ -8,7 +8,7 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     echo "first@@@@@@@@@@@@@@"
-    node(label) {
+        echo "first@@@@@@@@@@@@@@end"
         def dockerhubUrl = 'jeg910716/watcha-webapp-test'
         def credentialId = 'dockerhub'
         echo "second@@@@@@@@@@@@@@"
@@ -35,5 +35,4 @@ volumes: [
                 sh "kubectl get pods"
             }
         }
-    }
 }
