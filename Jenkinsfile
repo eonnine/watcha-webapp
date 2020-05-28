@@ -1,80 +1,33 @@
-podTemplate(label: 'jenkins-slave-pod', 
-  containers: [
-    containerTemplate(
-      name: 'git',
-      image: 'alpine/git',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      name: 'maven',
-      image: 'maven:3.6.2-jdk-8',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      name: 'node',
-      image: 'node:8.16.2-alpine3.10',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      name: 'docker',
-      image: 'docker',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-  ],
-  volumes: [ 
-    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'), 
-  ]
-)
+def label = 'watcha-webapp'
 
-{
-    node('jenkins-slave-pod') { 
-        def registry = "192.168.194.129:5000"
-        def registryCredential = "dockerhub"
+podTemplate(label: label, containers: [
+    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.13.6', command: 'cat', ttyEnabled: true)
+],
+volumes: [
+  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+]) {
+    node(label) {
+        def dockerhubUrl = 'jeg910716/watcha-webapp-test'
+        def credentialId = 'dockerhub'
 
-        // https://jenkins.io/doc/pipeline/steps/git/
         stage('Clone repository') {
-            container('git') {
-                // https://gitlab.com/gitlab-org/gitlab-foss/issues/38910
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/dockerizing']],
-                    userRemoteConfigs: [
-                        [url: 'http://192.168.194.132/root/stlapp.git', credentialsId: 'jacobbaek-privategitlab']
-                    ],
-                ])
-            }
+            checkout scm
         }
-        
-        stage('build the source code via npm') {
-            container('node') {
-                sh 'cd frontend &amp;&amp; npm install &amp;&amp; npm run build:production'
-            }
-        }
-        
-        stage('build the source code via maven') {
-            container('maven') {
-                sh 'mvn package'
-                sh 'bash build.sh'
-            }
-        }
-
-        stage('Build docker image') {
+        stage('Create Docker images') {
             container('docker') {
-                withDockerRegistry([ credentialsId: "$registryCredential", url: "http://$registry" ]) {
-                    sh "docker build -t $registry/stlapp:1.0 -f ./Dockerfile ."
+                withCredentials('https://registry.hub.docker.com', "$credentialId") {
+                sh """
+                    docker build -t $dockerhubUrl:dev ./
+                    docker push -t $dockerhubUrl:dev
+                    """
                 }
             }
         }
-
-        stage('Push docker image') {
-            container('docker') {
-                withDockerRegistry([ credentialsId: "$registryCredential", url: "http://$registry" ]) {
-                    docker.image("$registry/stlapp:1.0").push()
-                }
+        stage('Run kubectl') {
+            container('kubectl') {
+                sh "kubectl get pods"
             }
         }
-    }   
+    }
 }
