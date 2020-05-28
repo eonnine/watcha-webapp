@@ -1,13 +1,6 @@
 def label = 'watcha-webapp'
 
-podTemplate(label: label, containers: [
-    containerTemplate(name: 'git', image: 'alpine/git', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl', command: 'cat', ttyEnabled: true)
-],
-volumes: [
-  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
-]) {
+
     echo "first@@@@@@@@@@@@@@"
     node(label) {
         echo "first@@@@@@@@@@@@@@end"
@@ -22,33 +15,9 @@ volumes: [
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/master']],
                     userRemoteConfigs: [
-                        [url: 'http://192.168.194.132/root/sampleapp.git', credentialsId: "$credentialGithubId"]
+                        [url: 'https://github.com/eonnine/watcha-webapp.git', credentialsId: "$credentialGithubId"]
                     ],
                 ])
             }
         }
-
-        stage('Clone repository') {
-            echo "third@@@@@@@@@@@@@@"
-            checkout scm
-            echo "third@@@@@@@@@@@@@@end"
-        }
-        stage('Create Docker images') {
-            container('docker') {
-                echo "fourth@@@@@@@@@@@@@@"
-                withCredentials('https://registry.hub.docker.com', "$credentialDockerId") {
-                sh """
-                    docker build -t $dockerhubUrl:dev ./
-                    docker push -t $dockerhubUrl:dev
-                    """
-                }
-                echo "fourth@@@@@@@@@@@@@@end"
-            }
-        }
-        stage('Run kubectl') {
-            container('kubectl') {
-                sh "kubectl get pods"
-            }
-        }
     }
-}
