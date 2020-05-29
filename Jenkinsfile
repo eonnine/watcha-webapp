@@ -14,6 +14,8 @@ node {
     }
 
     stage('Start App') {
-        customImage.withRun('-p 3000:3000')
+        customImage.inside {
+            sh "docker -d -p jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}"
+        }
     }
 }
