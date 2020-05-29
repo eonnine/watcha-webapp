@@ -9,9 +9,9 @@ node {
     stage('Build and Push docker image') {
         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
             customImage = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}")
-            customImage.push()
+            // customImage.push()
 
-            docker.image("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}").inside(opts) {
+            customImage.inside {
                 sh "run -d -p 3000:3000"
             }
         }
