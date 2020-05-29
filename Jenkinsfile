@@ -1,14 +1,10 @@
 pipeline {
     stages {
-        def customImage
-
         stage('Checkout github branch') {
             steps {
                 checkout scm
             }
         }
-
-        echo '##docer##'
         stage('Build and Push image') {
             steps{
                 docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
@@ -17,8 +13,6 @@ pipeline {
                 }
             }
         }
-
-        echo '##kubectl##'
         stage('Apply Kubernetes files') {
             steps{
                 withKubeConfig([
