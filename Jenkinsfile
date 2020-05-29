@@ -12,7 +12,7 @@ node {
             // customImage.push()
 
             customImage.inside {
-                sh "run -d -p 3000:3000"
+                sh "docker run -d -p 3000:3000"
             }
         }
     }
