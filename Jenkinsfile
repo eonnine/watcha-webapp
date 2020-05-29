@@ -1,15 +1,14 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:10.20.1' 
-            args '-p 3000:3000' 
-        }
+node('docker') {
+    def customImage
+
+    stage('Checkout github branch') {
+        checkout scm
     }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install' 
-            }
+
+    stage('Build and Push docker image') {
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            customImage = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_ID}")
+            customImage.push()
         }
     }
 }
