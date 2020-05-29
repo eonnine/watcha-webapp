@@ -1,25 +1,5 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:10.20.1' 
-            args '-p 3000:3000' 
-        }
-        dockerfile {
-            filename 'Dockerfile'
-            dir '.'
-            label 'docker-build'
-            registryUrl 'jeg910716/watcha-webapp:tagname'
-            registryCredentialsId 'dockerhub'
-        }
-    }
-    environment { 
-        CI = 'true'
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install'
-            }
-        }
-    }
+node {
+    checkout scm
+    def customImage = docker.build("jeg910716/watcha-webapp:${env.BUILD_ID}")
+    customImage.push()
 }
