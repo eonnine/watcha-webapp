@@ -10,9 +10,10 @@ node {
         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
             customImage = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}")
             customImage.push()
-
-            docker.image("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}").withRun('-d -p 3000:3000')
         }
     }
 
+    stage('Start App') {
+        customImage.withRun('-d -p 3000:3000')
+    }
 }
