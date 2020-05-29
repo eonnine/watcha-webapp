@@ -15,7 +15,6 @@ node {
 
     echo '##kubectl##'
     stage('Apply Kubernetes files') {
-        sh 'kubectl apply -f ./config/k8s/dev.yaml'
         withKubeConfig([
             credentialsId: 'kubernetes',
             serverUrl: 'https://kubernetes.docker.internal:6443',
