@@ -16,5 +16,14 @@ node {
     echo '##kubectl##'
     stage('Apply Kubernetes files') {
         sh 'kubectl apply -f ./config/k8s/dev.yaml'
+        withKubeConfig([
+            credentialsId: 'kubernetes',
+            serverUrl: 'https://kubernetes.docker.internal:6443',
+            contextName: 'docker-desktop',
+            clusterName: 'docker-desktop',
+            namespace: 'default'
+        ]) {
+            sh 'kubectl get pods'
+        }
     }
 }
