@@ -1,5 +1,5 @@
-podTemplate(label: 'jenkins-slave') { 
-    node('jenkins-slave') {
+podTemplate { 
+    node(POD_LABEL) {
         def customImage
 
         stage('Checkout') {
