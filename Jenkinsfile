@@ -17,7 +17,7 @@ node {
         withKubeCredentials ([ 
             [ credentialsId : 'kubernetes' , serverUrl : 'https://kubernetes.docker.internal:6443' ]
         ]) {
-            sh 'sudo kubectl get pods'
+            sh 'kubectl get pods'
         }
     }
 }
