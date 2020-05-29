@@ -6,7 +6,7 @@ podTemplate(label: label, containers: [
     containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl', command: 'cat', ttyEnabled: true)
 ],
 volumes: [
-  hostPathVolume(mountPath: '/usr/local/bin/docker', hostPath: '/usr/bin/docker')
+  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     echo "first@@@@@@@@@@@@@@"
     node(label) {
