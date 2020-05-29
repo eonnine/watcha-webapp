@@ -8,7 +8,10 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'npm install' 
+                sh '
+                    docker build -t jeg910716/watcha-webapp:dev
+                    docker push jeg910716/watcha-webapp:dev
+                '
             }
         }
     }
