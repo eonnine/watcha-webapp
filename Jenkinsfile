@@ -14,8 +14,6 @@ node {
     }
 
     stage('Start App') {
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            customImage.withRun('-p 3000:3000')
-        }
+        customImage.withRun('-p 3000:3000')
     }
 }
