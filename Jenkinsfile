@@ -14,7 +14,9 @@ node {
     // }
 
     stage('Apply kubernetes') {
-        withKubeConfig ([ credentialsId : 'kubernetes' , serverUrl : 'https://kubernetes.docker.internal:6443' ]) {
+        withKubeCredentials ([ 
+            [ credentialsId : 'kubernetes' , serverUrl : 'https://kubernetes.docker.internal:6443' ]
+        ]) {
             sh 'kubectl get pods'
         }
     }
