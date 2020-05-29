@@ -4,6 +4,12 @@ pipeline {
             image 'node:10.20.1' 
             args '-p 3000:3000' 
         }
+        dockerfile {
+            filename 'Dockerfile'
+            label 'docker-build'
+            registryUrl 'jeg910716/watcha-webapp:tagname'
+            registryCredentialsId 'dockerhub'
+        }
     }
     environment { 
         CI = 'true'
@@ -12,13 +18,6 @@ pipeline {
         stage('Build') { 
             steps {
                 sh 'npm install'
-            }
-        }
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
             }
         }
     }
