@@ -1,54 +1,33 @@
-def label = 'watcha-webapp'
-
-podTemplate(label: label, containers: [
-    containerTemplate(name: 'git', image: 'alpine/git', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl', command: 'cat', ttyEnabled: true)
-],
-volumes: [
-  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
-]) {
-    echo "first@@@@@@@@@@@@@@"
-    node(label) {
-        echo "first@@@@@@@@@@@@@@end"
-        def dockerhubUrl = 'jeg910716/watcha-webapp-test'
-        def credentialDockerId = 'docker'
-        def credentialGithubId = 'github'
-        echo "second@@@@@@@@@@@@@@"
-
-        stage('Clone repository') {
-            container('git') {
-                // https://gitlab.com/gitlab-org/gitlab-foss/issues/38910
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/master']],
-                    userRemoteConfigs: [
-                        [url: 'https://github.com/eonnine/watcha-webapp.git', credentialsId: "$credentialGithubId"]
-                    ],
-                ])
-            }
-        }
-
-        stage('Clone repository') {
-            echo "third@@@@@@@@@@@@@@"
-            checkout scm
-            echo "third@@@@@@@@@@@@@@end"
-        }
-        stage('Create Docker images') {
-            container('docker') {
-                echo "fourth@@@@@@@@@@@@@@"
-                withCredentials('https://registry.hub.docker.com', "$credentialDockerId") {
-                sh """
-                    docker build -t $dockerhubUrl:dev ./
-                    docker push -t $dockerhubUrl:dev
-                    """
+pipeline {
+    agent none
+    options { skipDefaultCheckout(true) }
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:10.20.1'
                 }
-                echo "fourth@@@@@@@@@@@@@@end"
+            }
+            options { skipDefaultCheckout(false) }
+            steps {
+                sh 'npm install'
+                sh 'npm run build'
             }
         }
-        stage('Run kubectl') {
-            container('kubectl') {
-                sh "kubectl get pods"
+        stage('Docker build') {
+            agent any
+            steps {
+                sh 'docker build -t jeg910716/watcha-webapp .'
             }
         }
+        // stage('Docker run') {
+        //     agent any
+        //     steps {
+        //         sh 'docker ps -f name=nginx-react-container -q | xargs --no-run-if-empty docker container stop'
+        //         sh 'docker container ls -a -fname=nginx-react-container -q | xargs -r docker container rm'
+        //         sh 'docker rmi $(docker images -f "dangling=true" -q)'
+        //         sh 'docker run -d --name nginx-react-container -p 80:80 nginx-react-image:latest'
+        //     }
+        // }
     }
 }
