@@ -15,6 +15,6 @@ node {
     }
 
     stage('Run docker image') {
-        customImage.run("-p 3000:3000") 
+        customImage.run("-rm -p 3000:3000") 
     }
 }
