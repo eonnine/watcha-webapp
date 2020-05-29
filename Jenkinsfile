@@ -1,3 +1,4 @@
+// ref: https://docs.cloudbees.com/docs/admin-resources/latest/plugins/docker-workflow
 node {
     def customImage
 
@@ -10,10 +11,7 @@ node {
         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
             customImage = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}")
             // customImage.push()
-
-            customImage.inside {
-                sh "docker run -d -p 3000:3000"
-            }
+            customImage.run("-d -p 3000:3000") 
         }
     }
 }
