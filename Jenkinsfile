@@ -1,4 +1,6 @@
-node(POD_LABEL) {
+def label = 'watcha-webapp-dev'
+
+node(label) {
     def customImage
 
     stage('Checkout github branch') {
