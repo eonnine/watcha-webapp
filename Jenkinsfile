@@ -1,15 +1,13 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:10.20.1' 
-            args '-p 3000:3000' 
-        }
+node {
+    def app
+
+    stage('Checkout') {
+        // Get some code from a Git repository
+        checkout scm
     }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install'
-            }
-        }
+
+    stage('Build and Push docker image') {
+        app = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_NUMBER}")
+        app.push()
     }
 }
