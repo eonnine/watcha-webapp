@@ -1,28 +1,15 @@
-def label = 'watcha-webapp-dev'
-
-node(label) {
-    def customImage
-
-    stage('Checkout github branch') {
-        checkout scm
-    }
-
-    stage('Build and Push docker image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            customImage = docker.build("jeg910716/watcha-webapp:dev-${env.BUILD_ID}")
-            customImage.push()
+pipeline {
+    agent {
+        docker {
+            image 'node:6-alpine' 
+            args '-p 3000:3000' 
         }
     }
-
-    stage('Apply kubernetes') {
-        withKubeConfig([
-            credentialsId: 'kubernetes',
-            serverUrl: 'https://kubernetes.docker.internal:6443',
-            contextName: 'docker-desktop',
-            clusterName: 'docker-desktop',
-            namespace: 'default'
-        ]) {
-            sh 'kubectl get pods'
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'npm install' 
+            }
         }
     }
 }
