@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: watcha-webapp-dev
+  labels:
+    run: watcha-webapp
+spec:
+  selector:
+    # deployment의 template name을 가르킵니다.
+    run: watcha-webapp
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+  type: LoadBalancer
