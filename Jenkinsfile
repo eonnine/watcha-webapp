@@ -16,7 +16,7 @@ volumes: [
 
         stage('Build and Push docker image') {
             container('docker') {
-                withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub']])  {
                     sh """
                         docker version
                     """
