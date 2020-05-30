@@ -34,7 +34,7 @@ volumes: [
         stage('Apply kubernetes') {
             container('kubectl') {
                 sh """
-                    kubectl apply -f ./config/k8s/${env}.yaml 
+                    kubectl apply -f ./config/k8s/${env}.yaml --validate=false
                 """
             }
         }
