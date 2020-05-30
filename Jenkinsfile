@@ -14,11 +14,18 @@ volumes: [
 
         stage('Build and Push docker image') {
             container('docker') {
-                sh """
-                    docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
-                    docker build -t ${DOCKER_HUB_REPO}:dev .
-                    docker push ${DOCKER_HUB_REPO}:dev
-                """
+                withCredentials([[
+                    $class: 'UsernamePasswordMultiBinding',
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_HUB_USER',
+                    passwordVariable: 'DOCKER_HUB_PASSWORD'
+                ]])  {
+                    sh """
+            
+                        docker build -t ${DOCKER_HUB_REPO}:dev .
+                        docker push ${DOCKER_HUB_REPO}:dev
+                    """
+                }
             }
         }
         stage('Apply kubernetes') {
