@@ -7,7 +7,7 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     node(POD_LABEL) {
-        def customImage
+        def repo = 'jeg910716/watcha-webapp:dev'
 
         stage('Checkout github branch') {
             // Get some code from a Git repository
@@ -22,26 +22,19 @@ volumes: [
                     usernameVariable: 'DOCKER_HUB_USER',
                     passwordVariable: 'DOCKER_HUB_PASSWORD'
                 ]])  {
-                    sh """
-                        docker version
-                    """
+                    sh "
+                        docker build -t ${repo}
+                        docker push ${repo}
+                    "
                 }
             }
         }
-        stage('Apply kubectl') {
+        stage('Apply kubernetes') {
             container('kubectl') {
-                sh "kubectl version"
+                sh "
+                    kubectl apply ./config/k8s/dev.yaml
+                "
             }
         }
-        // stage('Build and Push docker image') {
-        //     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-        //         customImage = docker.build("jeg910716/watcha-webapp:dev")
-        //         customImage.push()
-        //     }
-        // }
-
-        // stage('Apply kubernetes') {
-            
-        // }
     }
 }
