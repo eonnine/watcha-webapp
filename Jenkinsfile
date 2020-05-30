@@ -1,12 +1,12 @@
 // ref: https://docs.cloudbees.com/docs/admin-resources/latest/plugins/docker-workflow
-podTemplate(containers: [
+podTemplate(label: POD_LABEL, containers: [
     containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
 ],
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
-    node {
+    node(POD_LABEL) {
         def customImage
 
         stage('Checkout github branch') {
