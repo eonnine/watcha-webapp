@@ -7,7 +7,8 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     node(POD_LABEL) {
-        def repo = 'jeg910716/watcha-webapp:dev'
+        def env = "dev"
+        def repo = "jeg910716/watcha-webapp:${env}"
 
         stage('Checkout github branch') {
             // Get some code from a Git repository
@@ -33,7 +34,7 @@ volumes: [
         stage('Apply kubernetes') {
             container('kubectl') {
                 sh """
-                    kubectl apply -f ./config/k8s/dev.yaml 
+                    kubectl apply -f ./config/k8s/${env}.yaml 
                 """
             }
         }
