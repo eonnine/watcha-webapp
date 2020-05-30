@@ -22,18 +22,18 @@ volumes: [
                     usernameVariable: 'DOCKER_HUB_USER',
                     passwordVariable: 'DOCKER_HUB_PASSWORD'
                 ]])  {
-                    sh "
+                    sh """
                         docker build -t ${repo}
                         docker push ${repo}
-                    "
+                    """
                 }
             }
         }
         stage('Apply kubernetes') {
             container('kubectl') {
-                sh "
+                sh """
                     kubectl apply ./config/k8s/dev.yaml
-                "
+                """
             }
         }
     }
