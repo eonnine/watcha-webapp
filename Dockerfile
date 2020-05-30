@@ -6,8 +6,7 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 
-RUN npm install --silent
-RUN npm install react-scripts@2.1.3 -g --silent
+RUN npm install
 
 # 소스를 작업폴더로 복사하고 빌드
 COPY . /usr/src/app
