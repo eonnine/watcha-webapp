@@ -7,6 +7,8 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     node(POD_LABEL) {
+        def repo = 'jeg910716/watcha-webapp:dev'
+
         stage('Checkout github branch') {
             // Get some code from a Git repository
             checkout scm
@@ -22,8 +24,8 @@ volumes: [
                 ]])  {
                     sh """
                         docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
-                        docker build -t ${DOCKER_HUB_REPO}:dev .
-                        docker push ${DOCKER_HUB_REPO}:dev
+                        docker build -t ${repo} .
+                        docker push ${repo}
                     """
                 }
             }
