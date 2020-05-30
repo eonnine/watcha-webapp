@@ -23,7 +23,7 @@ volumes: [
                     passwordVariable: 'DOCKER_HUB_PASSWORD'
                 ]])  {
                     sh """
-                        docker build -t ${repo}
+                        docker build -t ${repo} .
                         docker push ${repo}
                     """
                 }
