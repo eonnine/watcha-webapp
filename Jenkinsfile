@@ -16,7 +16,12 @@ volumes: [
 
         stage('Build and Push docker image') {
             container('docker') {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub']])  {
+                withCredentials([[
+                    $class: 'UsernamePasswordMultiBinding',
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_HUB_USER'
+                    passwordVariable: 'DOCKER_HUB_PASSWORD'
+                ]])  {
                     sh """
                         docker version
                     """
