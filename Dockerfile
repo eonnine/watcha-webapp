@@ -2,15 +2,15 @@
 FROM node:10.20.1 as builder
 
 # 작업 폴더를 만들고 npm 설치
-WORKDIR /usr/src/app
-COPY package.json /usr/src/app/package.json
-COPY yarn.lock /usr/src/app/yarn.lock
+# WORKDIR /usr/src/app
+# COPY package.json /usr/src/app/package.json
+# COPY yarn.lock /usr/src/app/yarn.lock
 
-RUN yarn install
+# RUN yarn install
 
 # 소스를 작업폴더로 복사하고 빌드
-COPY . /usr/src/app
-RUN yarn build
+# COPY . /usr/src/app
+# RUN yarn build
 
 FROM nginx:stable-alpine
 # 앱에서 설정한 nginx 설정 파일을 복사
