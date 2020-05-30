@@ -7,8 +7,6 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]) {
     node(POD_LABEL) {
-        def repo = 'jeg910716/watcha-webapp:dev'
-
         stage('Checkout github branch') {
             // Get some code from a Git repository
             checkout scm
@@ -16,24 +14,17 @@ volumes: [
 
         stage('Build and Push docker image') {
             container('docker') {
-                withCredentials([[
-                    $class: 'UsernamePasswordMultiBinding',
-                    credentialsId: 'dockerhub',
-                    usernameVariable: 'DOCKER_HUB_USER',
-                    passwordVariable: 'DOCKER_HUB_PASSWORD'
-                ]])  {
-                    sh """
-                        docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
-                        docker build -t ${repo} .
-                        docker push ${repo}
-                    """
-                }
+                sh """
+                    docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
+                    docker build -t ${DOCKER_HUB_REPO}:dev .
+                    docker push ${DOCKER_HUB_REPO}:dev
+                """
             }
         }
         stage('Apply kubernetes') {
             container('kubectl') {
                 sh """
-                    kubectl apply -f ./config/k8s/dev.yaml
+                    kubectl apply -f ./config/k8s/dev.yaml --validate=false
                 """
             }
         }
