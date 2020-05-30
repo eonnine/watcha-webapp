@@ -33,8 +33,7 @@ volumes: [
         stage('Apply kubernetes') {
             container('kubectl') {
                 sh """
-                    kubectl apply -f ./config/k8s/dev/deploy.yaml
-                    kubectl apply -f ./config/k8s/dev/service.yaml
+                    kubectl apply -f ./config/k8s/dev.yaml
                 """
             }
         }
