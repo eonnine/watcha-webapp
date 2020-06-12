@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: watcha-webapp-dev
+  name: watcha-webapp
 spec:
   selector:
     matchLabels:
@@ -16,21 +16,21 @@ spec:
     spec:
       containers:
       - name: watcha-webapp
-        image: jeg910716/watcha-webapp:dev
+        image: jeg910716/watcha-webapp
         ports:
         - containerPort: 80
 ---	
 apiVersion: v1	
 kind: Service	
 metadata:	
-  name: watcha-webapp-dev	
+  name: watcha-webapp
   labels:	
     run: watcha-webapp	
 spec:	
   selector:	
     run: watcha-webapp	
   ports:	
-  - port: 3000	
+  - port: 3010
     targetPort: 3000	
     protocol: TCP	
   type: LoadBalancer 

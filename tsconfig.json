@@ -2,6 +2,9 @@
   "compileOnSave": true,
   "compilerOptions": {
     "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "allowJs": true,
     "checkJs": true,
     "noImplicitAny": true,
@@ -25,7 +28,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "charset": "utf8",
     "locale": "ko"
   },

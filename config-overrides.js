@@ -1,16 +1,19 @@
-const rewireReactHotLoader = require('react-app-rewire-hot-loader-for-customize-cra')
+const path = require('path');
 const {
   override,
   disableChunk,
-  addWebpackModuleRule
+  addWebpackModuleRule,
+  addWebpackAlias
 } = require('customize-cra');
 
 module.export = override(
   disableChunk(),
-  rewireReactHotLoader(),
   addWebpackModuleRule({
     test: '/\.(graphql|gql)$/',
     exclude: '/node_modules/',
     use: 'graphql-tag/loader',
   }),
+  addWebpackAlias({
+    '@': path.resolve(__dirname, 'src'),
+  })
 );  
