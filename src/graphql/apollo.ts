@@ -1,16 +1,17 @@
-import { ApolloClient } from 'apollo-client'
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
-import { createHttpLink,  } from 'apollo-link-http'
-import { setContext } from 'apollo-link-context'
-import { onError } from 'apollo-link-error'
-import { RetryLink } from "apollo-link-retry"
-import { WebSocketLink } from "apollo-link-ws"
-import { getMainDefinition } from 'apollo-utilities'
-import { split , from } from 'apollo-link'
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
+import { onError } from 'apollo-link-error';
+import { RetryLink } from 'apollo-link-retry';
+// import { WebSocketLink } from 'apollo-link-ws';
+// import { getMainDefinition } from 'apollo-utilities';
+// import { split, from } from 'apollo-link';
+import { from } from 'apollo-link';
 
-import introspectionQueryResultData from './fragmentTypes'
+import introspectionQueryResultData from './fragmentTypes';
 
-const GRAPHQL_ENDPOINT = "api.graph.cool/simple/v1/swapi"
+const GRAPHQL_ENDPOINT = 'api.graph.cool/simple/v1/swapi';
 
 /**
  * @ref
@@ -19,7 +20,7 @@ const GRAPHQL_ENDPOINT = "api.graph.cool/simple/v1/swapi"
 const httpLink = createHttpLink({
   uri: `https://${GRAPHQL_ENDPOINT}`,
   credentials: 'omit',
-})
+});
 
 /**
  * @ref
@@ -54,14 +55,14 @@ const httpLink = createHttpLink({
  *  Authentication: https://www.apollographql.com/docs/react/networking/authentication/
  */
 const authLink = setContext((operation, { headers }) => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token');
   return {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : '',
-    }
-  }
-})
+    },
+  };
+});
 
 /**
  * @ref
@@ -71,43 +72,45 @@ const retryLink = new RetryLink({
   delay: {
     initial: 300,
     max: 1000,
-    jitter: true
+    jitter: true,
   },
   attempts: {
     max: 5,
-    retryIf: (error, _operation) => !!error
-  }
-})
+    retryIf: (error) => !!error,
+  },
+});
 
 /**
  * @ref
  *  apollo-link-error: https://www.apollographql.com/docs/link/links/error/
  */
-const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
+    // eslint-disable-next-line
     for (let err of graphQLErrors) {
-      switch ((err.extensions || {}).code) {
-        case 'UNAUTHENTICATED':
-          // error code is set to UNAUTHENTICATED
-          // when AuthenticationError thrown in resolver
+      console.error(err);
+      // switch ((err.extensions || {}).code) {
+      //   case 'UNAUTHENTICATED':
+      //     // error code is set to UNAUTHENTICATED
+      //     // when AuthenticationError thrown in resolver
 
-          // modify the operation context with a new token
-          const oldHeaders = operation.getContext().headers
-          operation.setContext({
-            headers: {
-              ...oldHeaders,
-              authorization: `new Token`,
-            },
-          })
-          // retry the request, returning the new observable
-          return forward(operation)
-      }
+      //     // modify the operation context with a new token
+      //     const oldHeaders = operation.getContext().headers;
+      //     operation.setContext({
+      //       headers: {
+      //         ...oldHeaders,
+      //         authorization: `new Token`,
+      //       },
+      //     });
+      //     // retry the request, returning the new observable
+      //     return forward(operation);
+      // }
     }
   }
   if (networkError) {
-    console.dir('Network Error', networkError)
+    console.dir('Network Error', networkError);
   }
-})
+});
 
 /**
  * @ref
@@ -123,10 +126,10 @@ const cache = new InMemoryCache({
    *  fragment-matcher: https://graphql-code-generator.com/docs/plugins/fragment-matcher/
    */
   fragmentMatcher: new IntrospectionFragmentMatcher({
-    introspectionQueryResultData
+    introspectionQueryResultData,
   }),
   cacheRedirects: {},
-})
+});
 
 /**
  * @ref
@@ -135,7 +138,7 @@ const cache = new InMemoryCache({
 export const apolloClient = new ApolloClient({
   ssrMode: false,
   /**
-   * 에러 링크는 http 혹은 
+   * 에러 링크는 http 혹은
    */
   link: from([errorLink, retryLink, authLink, httpLink]),
   cache,
@@ -154,5 +157,5 @@ export const apolloClient = new ApolloClient({
     mutate: {
       errorPolicy: 'all',
     },
-  }
-})
+  },
+});

@@ -6,7 +6,7 @@
     "start": "set PORT=3010 && react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-scripts test --watchAll=false",
-    "prettier": "prettier --config prettierrc.js --write src/**/*.{ts,tsx,css,scss}",
+    "prettier": "prettier --config prettierrc.js --write src/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint": "eslint . --ext .js,.ts,.tsx",
     "generate": "graphql-codegen"
   },
@@ -34,7 +34,8 @@
     "react-app-rewire-hot-loader": "^2.0.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "subscriptions-transport-ws": "^0.9.16"
+    "subscriptions-transport-ws": "^0.9.16",
+    "yorkie": "^2.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.13.5",
@@ -44,10 +45,13 @@
     "@types/react-dom": "^16.9.7",
     "@types/react-router-dom": "^5.1.5",
     "customize-cra": "^0.9.1",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-react-hooks": "^4.0.4",
     "lint-staged": "^10.2.9",
+    "prettier": "^2.0.5",
     "react-app-rewired": "^2.1.6",
     "react-hot-loader": "^4.12.21",
     "ts-loader": "^7.0.2",
@@ -55,6 +59,13 @@
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "npm run lint",
+      "npm run prettier",
+      "git add"
+    ]
   },
   "browserslist": {
     "production": [

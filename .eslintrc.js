@@ -31,8 +31,6 @@ module.exports = {
     'react/forbid-prop-types': 0,
     'react/jsx-indent-props': 0,
     'no-case-declarations': 0,
-    'no-param-reassign': 0,
-    'react/jsx-curly-newline': 0,
     'no-nested-ternary': 0,
     'react-hooks/rules-of-hooks': 'error',
     'global-require': 0,

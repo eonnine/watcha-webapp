@@ -9,7 +9,7 @@ const {
 module.export = override(
   disableChunk(),
   addWebpackModuleRule({
-    test: '/\.(graphql|gql)$/',
+    test: '/.(graphql|gql)$/',
     exclude: '/node_modules/',
     use: 'graphql-tag/loader',
   }),
