@@ -33,7 +33,7 @@
     "react": "^16.13.1",
     "react-app-rewire-hot-loader": "^2.0.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "subscriptions-transport-ws": "^0.9.16",
     "yorkie": "^2.0.0"
   },
